@@ -19,7 +19,7 @@ func Load() *Config {
 	}
 
 	return &Config{
-		AppPort:   getEnv("APP_PORT", "3000"),
+		AppPort:   getEnv("APP_PORT", "8080"),
 		DBUrl:     getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/edutrip?sslmode=disable"),
 		JWTSecret: getEnv("JWT_SECRET", ""),
 	}
