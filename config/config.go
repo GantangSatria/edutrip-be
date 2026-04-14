@@ -9,7 +9,12 @@ import (
 
 type Config struct {
 	AppPort   string
-	DBUrl     string
+	DBHost    string
+	DBPort    string
+	DBUser    string
+	DBPassword string
+	DBName    string
+	DBSSLMode string
 	JWTSecret string
 }
 
@@ -20,7 +25,12 @@ func Load() *Config {
 
 	return &Config{
 		AppPort:   getEnv("APP_PORT", "8080"),
-		DBUrl:     getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/edutrip?sslmode=disable"),
+		DBHost:     getEnv("DB_HOST", "localhost"),
+		DBPort:     getEnv("DB_PORT", "5432"),
+		DBUser:     getEnv("DB_USER", "postgres"),
+		DBPassword: getEnv("DB_PASSWORD", "postgres"),
+		DBName:     getEnv("DB_NAME", "edutrip"),
+		DBSSLMode:  getEnv("DB_SSL_MODE", "disable"),
 		JWTSecret: getEnv("JWT_SECRET", ""),
 	}
 }
