@@ -15,6 +15,10 @@ func Register(
 ) {
 	api := app.Group("/api/v1")
 
+	api.Get("/", func(c fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "edutrip api"})
+	})
+
 	// Public
 	api.Post("/auth/login", authHandler.Login)
 	
