@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/GantangSatria/edutrip-be/internal/repository"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,7 +26,10 @@ func NewAuthService(adminRepo repository.AdminRepository, jwtSecret string) Auth
 func (s *authService) Login(ctx context.Context, email, password string) (string, error) {
 	admin, err := s.adminRepo.FindByEmail(ctx, email)
 	if err != nil {
-		return "", errors.New("invalid email or password")
+		if errors.Is(err, repository.ErrNotFound) {
+			return "", errors.New("invalid email or password")
+		}
+		return "", errors.New("internal server error")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(admin.PasswordHash), []byte(password)); err != nil {
