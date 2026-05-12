@@ -7,6 +7,7 @@ import (
 	"github.com/GantangSatria/edutrip-be/internal/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/GantangSatria/edutrip-be/pkg/utils"
 )
 
 type FasilitasIbadahRepository interface {
@@ -65,7 +66,7 @@ func (r *fasilitasIbadahRepository) FindByID(ctx context.Context, id int) (*doma
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, ErrNotFound
+			return nil, utils.ErrNotFound
 		}
 		return nil, err
 	}

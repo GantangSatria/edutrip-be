@@ -8,6 +8,7 @@ import (
 	"github.com/GantangSatria/edutrip-be/internal/repository"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/GantangSatria/edutrip-be/pkg/utils"
 )
 
 type AuthService interface {
@@ -26,7 +27,7 @@ func NewAuthService(adminRepo repository.AdminRepository, jwtSecret string) Auth
 func (s *authService) Login(ctx context.Context, email, password string) (string, error) {
 	admin, err := s.adminRepo.FindByEmail(ctx, email)
 	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
+		if errors.Is(err, utils.ErrNotFound) {
 			return "", errors.New("invalid email or password")
 		}
 		return "", errors.New("internal server error")
