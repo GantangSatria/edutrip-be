@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/GantangSatria/edutrip-be/internal/domain"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type AdminRepository interface {
@@ -26,6 +28,9 @@ func (r *adminRepository) FindByEmail(ctx context.Context, email string) (*domai
 		email,
 	).Scan(&admin.ID, &admin.Name, &admin.Email, &admin.PasswordHash, &admin.CreatedAt)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrNotFound
+		}
 		return nil, err
 	}
 	return admin, nil
