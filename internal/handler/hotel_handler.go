@@ -8,17 +8,26 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-type RestoranHalalHandler struct {
-	svc service.RestoranHalalService
+type HotelHandler struct {
+	svc service.HotelService
 }
 
-func NewRestoranHalalHandler(svc service.RestoranHalalService) *RestoranHalalHandler {
-	return &RestoranHalalHandler{svc}
+func NewHotelHandler(svc service.HotelService) *HotelHandler {
+	return &HotelHandler{svc}
 }
 
-// GET /api/restoran-halal?kota=Tokyo
-func (h *RestoranHalalHandler) GetAll(c fiber.Ctx) error {
+// GET /api/hotel?kota=Tokyo&tipe=bintang3
+func (h *HotelHandler) GetAll(c fiber.Ctx) error {
 	kota := c.Query("kota")
+	tipe := c.Query("tipe")
+
+	if kota != "" && tipe != "" {
+		data, err := h.svc.GetByKotaAndTipe(c.Context(), kota, tipe)
+		if err != nil {
+			return utils.HandleServiceError(c, err)
+		}
+		return response.OK(c, "success", data)
+	}
 	if kota != "" {
 		data, err := h.svc.GetByKota(c.Context(), kota)
 		if err != nil {
@@ -34,8 +43,8 @@ func (h *RestoranHalalHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/restoran-halal/:id
-func (h *RestoranHalalHandler) GetByID(c fiber.Ctx) error {
+// GET /api/hotel/:id
+func (h *HotelHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
 		return response.BadRequest(c, err.Error())
@@ -48,9 +57,9 @@ func (h *RestoranHalalHandler) GetByID(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// POST /api/admin/restoran-halal
-func (h *RestoranHalalHandler) Create(c fiber.Ctx) error {
-	var body domain.RestoranHalal
+// POST /api/admin/hotel
+func (h *HotelHandler) Create(c fiber.Ctx) error {
+	var body domain.Hotel
 	if err := c.Bind().JSON(&body); err != nil {
 		return response.BadRequest(c, "invalid request body")
 	}
@@ -58,17 +67,17 @@ func (h *RestoranHalalHandler) Create(c fiber.Ctx) error {
 	if err := h.svc.Create(c.Context(), &body); err != nil {
 		return utils.HandleServiceError(c, err)
 	}
-	return response.Created(c, "restoran halal berhasil ditambahkan", body)
+	return response.Created(c, "hotel berhasil ditambahkan", body)
 }
 
-// PUT /api/admin/restoran-halal/:id
-func (h *RestoranHalalHandler) Update(c fiber.Ctx) error {
+// PUT /api/admin/hotel/:id
+func (h *HotelHandler) Update(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
 		return response.BadRequest(c, err.Error())
 	}
 
-	var body domain.RestoranHalal
+	var body domain.Hotel
 	if err := c.Bind().JSON(&body); err != nil {
 		return response.BadRequest(c, "invalid request body")
 	}
@@ -77,11 +86,11 @@ func (h *RestoranHalalHandler) Update(c fiber.Ctx) error {
 	if err := h.svc.Update(c.Context(), &body); err != nil {
 		return utils.HandleServiceError(c, err)
 	}
-	return response.OK(c, "restoran halal berhasil diperbarui", body)
+	return response.OK(c, "hotel berhasil diperbarui", body)
 }
 
-// DELETE /api/admin/restoran-halal/:id
-func (h *RestoranHalalHandler) Delete(c fiber.Ctx) error {
+// DELETE /api/admin/hotel/:id
+func (h *HotelHandler) Delete(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
 		return response.BadRequest(c, err.Error())
@@ -90,5 +99,5 @@ func (h *RestoranHalalHandler) Delete(c fiber.Ctx) error {
 	if err := h.svc.Delete(c.Context(), id); err != nil {
 		return utils.HandleServiceError(c, err)
 	}
-	return response.OK(c, "restoran halal berhasil dihapus", nil)
+	return response.OK(c, "hotel berhasil dihapus", nil)
 }
