@@ -7,20 +7,20 @@ import (
 	"github.com/GantangSatria/edutrip-be/pkg/utils"
 )
 
-type TransportasiHandler struct {
-	svc service.TransportasiService
+type TokoOlehOlehHandler struct {
+	svc service.TokoOlehOlehService
 }
 
-func NewTransportasiHandler(svc service.TransportasiService) *TransportasiHandler {
-	return &TransportasiHandler{svc}
+func NewTokoOlehOlehHandler(svc service.TokoOlehOlehService) *TokoOlehOlehHandler {
+	return &TokoOlehOlehHandler{svc}
 }
 
-// GET /api/transportasi
-func (h *TransportasiHandler) GetAll(c fiber.Ctx) error {
-	rute := c.Query("rute")
+// GET /api/toko-oleh-oleh?kota=Tokyo
+func (h *TokoOlehOlehHandler) GetAll(c fiber.Ctx) error {
+	kota := c.Query("kota")
 
-	if rute != "" {
-		data, err := h.svc.GetByRute(c.Context(), rute)
+	if kota != "" {
+		data, err := h.svc.GetByKota(c.Context(), kota)
 		if err != nil {
 			return utils.HandleServiceError(c, err)
 		}
@@ -34,8 +34,8 @@ func (h *TransportasiHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/transportasi/:id
-func (h *TransportasiHandler) GetByID(c fiber.Ctx) error {
+// GET /api/toko-oleh-oleh/:id
+func (h *TokoOlehOlehHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
 		return response.BadRequest(c, err.Error())

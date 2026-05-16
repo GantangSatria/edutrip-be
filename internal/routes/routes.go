@@ -9,8 +9,7 @@ import (
 func Register(
 	app *fiber.App,
 	authHandler *handler.AuthHandler,
-	tripHandler *handler.TripHandler,
-	locationHandler *handler.LocationHandler,
+
 	authMiddleware *middleware.AuthMiddleware,
 ) {
 	api := app.Group("/api/v1")
@@ -22,10 +21,6 @@ func Register(
 	// Public
 	api.Post("/auth/login", authHandler.Login)
 	
-	api.Get("/trips", tripHandler.GetAll)
-	api.Get("/trips/:id", tripHandler.GetByID)
-	api.Get("/locations", locationHandler.GetAll)
-	api.Get("/locations/:id", locationHandler.GetByID)
 
 	// CMS — protected, hanya admin
 	admin := api.Group("/admin", authMiddleware.Protected())
