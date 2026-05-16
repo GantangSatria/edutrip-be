@@ -16,20 +16,48 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 		AppName: "EduTrip API",
 	})
 
-	// Repositories
-	adminRepo    := repository.NewAdminRepository(db)
- 
-	// Services
-	authService     := service.NewAuthService(adminRepo, cfg.JWTSecret)
- 
-	// Handlers
-	authHandler     := handler.NewAuthHandler(authService)
- 
-	// Middleware
+	// ── Repositories ──────────────────────────────────────────────────────────
+	adminRepo          := repository.NewAdminRepository(db)
+	fasilitasIbadahRepo := repository.NewFasilitasIbadahRepository(db)
+	hotelRepo          := repository.NewHotelRepository(db)
+	restoranHalalRepo  := repository.NewRestoranHalalRepository(db)
+	tokoOlehOlehRepo   := repository.NewTokoOlehOlehRepository(db)
+	transportasiRepo   := repository.NewTransportasiRepository(db)
+	wisataRepo         := repository.NewWisataRepository(db)
+
+	// ── Services ──────────────────────────────────────────────────────────────
+	authService          := service.NewAuthService(adminRepo, cfg.JWTSecret)
+	fasilitasIbadahSvc  := service.NewFasilitasIbadahService(fasilitasIbadahRepo)
+	hotelSvc            := service.NewHotelService(hotelRepo)
+	restoranHalalSvc    := service.NewRestoranHalalService(restoranHalalRepo)
+	tokoOlehOlehSvc     := service.NewTokoOlehOlehService(tokoOlehOlehRepo)
+	transportasiSvc     := service.NewTransportasiService(transportasiRepo)
+	wisataSvc           := service.NewWisataService(wisataRepo)
+
+	// ── Handlers ──────────────────────────────────────────────────────────────
+	authHandler          := handler.NewAuthHandler(authService)
+	fasilitasIbadahHdlr := handler.NewFasilitasIbadahHandler(fasilitasIbadahSvc)
+	hotelHdlr           := handler.NewHotelHandler(hotelSvc)
+	restoranHalalHdlr   := handler.NewRestoranHalalHandler(restoranHalalSvc)
+	tokoOlehOlehHdlr    := handler.NewTokoOlehOlehHandler(tokoOlehOlehSvc)
+	transportasiHdlr    := handler.NewTransportasiHandler(transportasiSvc)
+	wisataHdlr          := handler.NewWisataHandler(wisataSvc)
+
+	// ── Middleware ────────────────────────────────────────────────────────────
 	authMiddleware := middleware.NewAuthMiddleware(cfg.JWTSecret)
- 
-	// Routes
-	routes.Register(app, authHandler, authMiddleware)
- 
+
+	// ── Routes ────────────────────────────────────────────────────────────────
+	routes.Register(
+		app,
+		authHandler,
+		fasilitasIbadahHdlr,
+		hotelHdlr,
+		restoranHalalHdlr,
+		tokoOlehOlehHdlr,
+		transportasiHdlr,
+		wisataHdlr,
+		authMiddleware,
+	)
+
 	return app
 }
