@@ -15,6 +15,9 @@ type WisataRepository interface {
 	FindByID(ctx context.Context, id int) (*domain.Wisata, error)
 	FindByKota(ctx context.Context, kota string) ([]domain.Wisata, error)
 	FindByKotaAndKategori(ctx context.Context, kota, kategori string) ([]domain.Wisata, error)
+	Create(ctx context.Context, w *domain.Wisata) error
+	Update(ctx context.Context, w *domain.Wisata) error
+	Delete(ctx context.Context, id int) error
 }
 
 type wisataRepository struct {
@@ -113,4 +116,46 @@ func (r *wisataRepository) FindByKotaAndKategori(ctx context.Context, kota, kate
 		result = append(result, w)
 	}
 	return result, rows.Err()
+}
+
+func (r *wisataRepository) Create(ctx context.Context, w *domain.Wisata) error {
+	return r.db.QueryRow(ctx,
+		`INSERT INTO wisata
+			(kota, kategori_wisata, nama_wisata, tiket_wisata, alamat_wisata, latitude, longitude, ket_wisata, foto)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		RETURNING id, created_at`,
+		w.Kota, w.KategoriWisata, w.NamaWisata, w.TiketWisata,
+		w.AlamatWisata, w.Latitude, w.Longitude, w.KetWisata, w.Foto,
+	).Scan(&w.ID, &w.CreatedAt)
+}
+
+func (r *wisataRepository) Update(ctx context.Context, w *domain.Wisata) error {
+	tag, err := r.db.Exec(ctx,
+		`UPDATE wisata
+		SET kota = $1, kategori_wisata = $2, nama_wisata = $3, tiket_wisata = $4,
+		    alamat_wisata = $5, latitude = $6, longitude = $7, ket_wisata = $8, foto = $9
+		WHERE id = $10`,
+		w.Kota, w.KategoriWisata, w.NamaWisata, w.TiketWisata,
+		w.AlamatWisata, w.Latitude, w.Longitude, w.KetWisata, w.Foto, w.ID,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
+}
+
+func (r *wisataRepository) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx,
+		`DELETE FROM wisata WHERE id = $1`, id,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
 }

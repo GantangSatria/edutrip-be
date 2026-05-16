@@ -14,6 +14,9 @@ type TransportasiRepository interface {
 	FindAll(ctx context.Context) ([]domain.Transportasi, error)
 	FindByID(ctx context.Context, id int) (*domain.Transportasi, error)
 	FindByRute(ctx context.Context, rute string) ([]domain.Transportasi, error)
+	Create(ctx context.Context, t *domain.Transportasi) error
+	Update(ctx context.Context, t *domain.Transportasi) error
+	Delete(ctx context.Context, id int) error
 }
 
 type transportasiRepository struct {
@@ -98,4 +101,46 @@ func (r *transportasiRepository) FindByRute(ctx context.Context, rute string) ([
 		result = append(result, t)
 	}
 	return result, rows.Err()
+}
+
+func (r *transportasiRepository) Create(ctx context.Context, t *domain.Transportasi) error {
+	return r.db.QueryRow(ctx,
+		`INSERT INTO transportasi
+			(jenis_transportasi, nama_transportasi, rute, kode_bandara, harga_transportasi_idr, ket_transportasi, foto)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id, created_at`,
+		t.JenisTransportasi, t.NamaTransportasi, t.Rute, t.KodeBandara,
+		t.HargaTransportasiIDR, t.KetTransportasi, t.Foto,
+	).Scan(&t.ID, &t.CreatedAt)
+}
+
+func (r *transportasiRepository) Update(ctx context.Context, t *domain.Transportasi) error {
+	tag, err := r.db.Exec(ctx,
+		`UPDATE transportasi
+		SET jenis_transportasi = $1, nama_transportasi = $2, rute = $3, kode_bandara = $4,
+		    harga_transportasi_idr = $5, ket_transportasi = $6, foto = $7
+		WHERE id = $8`,
+		t.JenisTransportasi, t.NamaTransportasi, t.Rute, t.KodeBandara,
+		t.HargaTransportasiIDR, t.KetTransportasi, t.Foto, t.ID,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
+}
+
+func (r *transportasiRepository) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx,
+		`DELETE FROM transportasi WHERE id = $1`, id,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
 }

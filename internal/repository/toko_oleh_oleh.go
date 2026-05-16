@@ -14,6 +14,9 @@ type TokoOlehOlehRepository interface {
 	FindAll(ctx context.Context) ([]domain.TokoOlehOleh, error)
 	FindByID(ctx context.Context, id int) (*domain.TokoOlehOleh, error)
 	FindByKota(ctx context.Context, kota string) ([]domain.TokoOlehOleh, error)
+	Create(ctx context.Context, t *domain.TokoOlehOleh) error
+	Update(ctx context.Context, t *domain.TokoOlehOleh) error
+	Delete(ctx context.Context, id int) error
 }
 
 type tokoOlehOlehRepository struct {
@@ -91,4 +94,46 @@ func (r *tokoOlehOlehRepository) FindByKota(ctx context.Context, kota string) ([
 		result = append(result, t)
 	}
 	return result, rows.Err()
+}
+
+func (r *tokoOlehOlehRepository) Create(ctx context.Context, t *domain.TokoOlehOleh) error {
+	return r.db.QueryRow(ctx,
+		`INSERT INTO toko_oleh_oleh
+			(kota, nama_belanja, jenis_belanja, ket_belanja, alamat_belanja, latitude, longitude, foto)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id, created_at`,
+		t.Kota, t.NamaBelanja, t.JenisBelanja, t.KetBelanja,
+		t.AlamatBelanja, t.Latitude, t.Longitude, t.Foto,
+	).Scan(&t.ID, &t.CreatedAt)
+}
+
+func (r *tokoOlehOlehRepository) Update(ctx context.Context, t *domain.TokoOlehOleh) error {
+	tag, err := r.db.Exec(ctx,
+		`UPDATE toko_oleh_oleh
+		SET kota = $1, nama_belanja = $2, jenis_belanja = $3, ket_belanja = $4,
+		    alamat_belanja = $5, latitude = $6, longitude = $7, foto = $8
+		WHERE id = $9`,
+		t.Kota, t.NamaBelanja, t.JenisBelanja, t.KetBelanja,
+		t.AlamatBelanja, t.Latitude, t.Longitude, t.Foto, t.ID,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
+}
+
+func (r *tokoOlehOlehRepository) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx,
+		`DELETE FROM toko_oleh_oleh WHERE id = $1`, id,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
 }

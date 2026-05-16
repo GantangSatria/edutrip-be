@@ -18,24 +18,18 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 
 	// Repositories
 	adminRepo    := repository.NewAdminRepository(db)
-	tripRepo     := repository.NewTripRepository(db)
-	locationRepo := repository.NewLocationRepository(db)
  
 	// Services
 	authService     := service.NewAuthService(adminRepo, cfg.JWTSecret)
-	tripService     := service.NewTripService(tripRepo)
-	locationService := service.NewLocationService(locationRepo)
  
 	// Handlers
 	authHandler     := handler.NewAuthHandler(authService)
-	tripHandler     := handler.NewTripHandler(tripService)
-	locationHandler := handler.NewLocationHandler(locationService)
  
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(cfg.JWTSecret)
  
 	// Routes
-	routes.Register(app, authHandler, tripHandler, locationHandler, authMiddleware)
+	routes.Register(app, authHandler, authMiddleware)
  
 	return app
 }

@@ -25,11 +25,4 @@ func Register(
 	// CMS — protected, hanya admin
 	admin := api.Group("/admin", authMiddleware.Protected())
 
-	admin.Post("/trips", tripHandler.Create)
-	admin.Put("/trips/:id", tripHandler.Update)
-	admin.Delete("/trips/:id", tripHandler.Delete)
-
-	admin.Post("/locations", locationHandler.Create)
-	admin.Put("/locations/:id", locationHandler.Update)
-	admin.Delete("/locations/:id", locationHandler.Delete)
 }

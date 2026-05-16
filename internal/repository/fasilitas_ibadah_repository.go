@@ -14,6 +14,9 @@ type FasilitasIbadahRepository interface {
 	FindAll(ctx context.Context) ([]domain.FasilitasIbadah, error)
 	FindByID(ctx context.Context, id int) (*domain.FasilitasIbadah, error)
 	FindByKota(ctx context.Context, kota string) ([]domain.FasilitasIbadah, error)
+	Create(ctx context.Context, f *domain.FasilitasIbadah) error
+	Update(ctx context.Context, f *domain.FasilitasIbadah) error
+	Delete(ctx context.Context, id int) error
 }
 
 type fasilitasIbadahRepository struct {
@@ -91,4 +94,46 @@ func (r *fasilitasIbadahRepository) FindByKota(ctx context.Context, kota string)
 		result = append(result, f)
 	}
 	return result, rows.Err()
+}
+
+func (r *fasilitasIbadahRepository) Create(ctx context.Context, f *domain.FasilitasIbadah) error {
+	return r.db.QueryRow(ctx,
+		`INSERT INTO fasilitas_ibadah
+			(kota, tipe_fas, nama_fas_ibadah, lokasi_fas_ibadah, latitude, longitude, foto)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id, created_at`,
+		f.Kota, f.TipeFas, f.NamaFasIbadah, f.LokasiFasIbadah,
+		f.Latitude, f.Longitude, f.Foto,
+	).Scan(&f.ID, &f.CreatedAt)
+}
+
+func (r *fasilitasIbadahRepository) Update(ctx context.Context, f *domain.FasilitasIbadah) error {
+	tag, err := r.db.Exec(ctx,
+		`UPDATE fasilitas_ibadah
+		SET kota = $1, tipe_fas = $2, nama_fas_ibadah = $3, lokasi_fas_ibadah = $4,
+		    latitude = $5, longitude = $6, foto = $7
+		WHERE id = $8`,
+		f.Kota, f.TipeFas, f.NamaFasIbadah, f.LokasiFasIbadah,
+		f.Latitude, f.Longitude, f.Foto, f.ID,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
+}
+
+func (r *fasilitasIbadahRepository) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx,
+		`DELETE FROM fasilitas_ibadah WHERE id = $1`, id,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
 }

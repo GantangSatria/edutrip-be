@@ -14,6 +14,9 @@ type RestoranHalalRepository interface {
 	FindAll(ctx context.Context) ([]domain.RestoranHalal, error)
 	FindByID(ctx context.Context, id int) (*domain.RestoranHalal, error)
 	FindByKota(ctx context.Context, kota string) ([]domain.RestoranHalal, error)
+	Create(ctx context.Context, r *domain.RestoranHalal) error
+	Update(ctx context.Context, r *domain.RestoranHalal) error
+	Delete(ctx context.Context, id int) error
 }
 
 type restoranHalalRepository struct {
@@ -91,4 +94,46 @@ func (r *restoranHalalRepository) FindByKota(ctx context.Context, kota string) (
 		result = append(result, res)
 	}
 	return result, rows.Err()
+}
+
+func (r *restoranHalalRepository) Create(ctx context.Context, res *domain.RestoranHalal) error {
+	return r.db.QueryRow(ctx,
+		`INSERT INTO restoran_halal
+			(nama_resto, kota, alamat_resto, latitude, longitude, ket_resto, harga_resto, foto)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id, created_at`,
+		res.NamaResto, res.Kota, res.AlamatResto,
+		res.Latitude, res.Longitude, res.KetResto, res.HargaResto, res.Foto,
+	).Scan(&res.ID, &res.CreatedAt)
+}
+
+func (r *restoranHalalRepository) Update(ctx context.Context, res *domain.RestoranHalal) error {
+	tag, err := r.db.Exec(ctx,
+		`UPDATE restoran_halal
+		SET nama_resto = $1, kota = $2, alamat_resto = $3,
+		    latitude = $4, longitude = $5, ket_resto = $6, harga_resto = $7, foto = $8
+		WHERE id = $9`,
+		res.NamaResto, res.Kota, res.AlamatResto,
+		res.Latitude, res.Longitude, res.KetResto, res.HargaResto, res.Foto, res.ID,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
+}
+
+func (r *restoranHalalRepository) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx,
+		`DELETE FROM restoran_halal WHERE id = $1`, id,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return utils.ErrNotFound
+	}
+	return nil
 }
