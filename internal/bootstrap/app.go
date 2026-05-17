@@ -9,12 +9,15 @@ import (
 	"github.com/GantangSatria/edutrip-be/internal/service"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: "EduTrip API",
 	})
+
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	// ── Repositories ──────────────────────────────────────────────────────────
 	adminRepo          := repository.NewAdminRepository(db)
@@ -42,6 +45,13 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	tokoOlehOlehHdlr    := handler.NewTokoOlehOlehHandler(tokoOlehOlehSvc)
 	transportasiHdlr    := handler.NewTransportasiHandler(transportasiSvc)
 	wisataHdlr          := handler.NewWisataHandler(wisataSvc)
+	planDataHdlr        := handler.NewPlanDataHandler(
+		wisataSvc,
+		hotelSvc,
+		restoranHalalSvc,
+		fasilitasIbadahSvc,
+		tokoOlehOlehSvc,
+	)
 
 	// ── Middleware ────────────────────────────────────────────────────────────
 	authMiddleware := middleware.NewAuthMiddleware(cfg.JWTSecret)
@@ -56,6 +66,7 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 		tokoOlehOlehHdlr,
 		transportasiHdlr,
 		wisataHdlr,
+		planDataHdlr,
 		authMiddleware,
 	)
 

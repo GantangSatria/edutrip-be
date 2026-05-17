@@ -17,6 +17,8 @@ func Register(
 	transportasiHandler    *handler.TransportasiHandler,
 	wisataHandler          *handler.WisataHandler,
 
+	planDataHandler *handler.PlanDataHandler,
+
 	authMiddleware *middleware.AuthMiddleware,
 ) {
 	api := app.Group("/api/v1")
@@ -27,6 +29,8 @@ func Register(
 
 	// ── Public ────────────────────────────────────────────────────────────────
 	api.Post("/auth/login", authHandler.Login)
+
+	api.Get("/plan-data", planDataHandler.GetPlanData)
 
 	api.Get("/fasilitas-ibadah", fasilitasIbadahHandler.GetAll)
 	api.Get("/fasilitas-ibadah/:id", fasilitasIbadahHandler.GetByID)
