@@ -10,12 +10,27 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
 	fiberSwagger "github.com/gofiber/contrib/v3/swaggo"
+
+	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
 func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: "EduTrip API",
 	})
+
+	app.Use(logger.New())
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
+			"https://edutrip-japan.vercel.app",
+		},
+		AllowMethods: []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
 
 	app.Get("/swagger/*", fiberSwagger.HandlerDefault)
 
