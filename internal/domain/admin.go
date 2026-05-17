@@ -6,9 +6,9 @@ import (
 )
 
 type Admin struct {
-    ID           uuid.UUID `db:"id"`
-    Name         string    `db:"name"`
-    Email        string    `db:"email"`
-    PasswordHash string    `db:"password_hash"`
-    CreatedAt    time.Time `db:"created_at"`
+    ID           uuid.UUID `db:"id" json:"id"`
+    Name         string    `db:"name" json:"name"`
+    Email        string    `db:"email" json:"email"`
+    PasswordHash string    `db:"password_hash" json:"password_hash"`
+    CreatedAt    time.Time `db:"created_at" json:"created_at"`
 }
