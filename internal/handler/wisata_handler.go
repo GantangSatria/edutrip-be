@@ -16,7 +16,16 @@ func NewWisataHandler(svc service.WisataService) *WisataHandler {
 	return &WisataHandler{svc}
 }
 
-// GET /api/wisata?kota=Tokyo&kategori=alam
+// GetAll godoc
+// @Summary      List wisata
+// @Description  Ambil semua wisata. Filter opsional dengan query param kota dan/atau kategori.
+// @Tags         Wisata
+// @Produce      json
+// @Param        kota      query     string  false  "Filter by kota"
+// @Param        kategori  query     string  false  "Filter by kategori wisata"
+// @Success      200       {object}  response.Base{data=[]domain.Wisata}
+// @Failure      500       {object}  response.Base
+// @Router       /wisata [get]
 func (h *WisataHandler) GetAll(c fiber.Ctx) error {
 	kota := c.Query("kota")
 	kategori := c.Query("kategori")
@@ -43,7 +52,16 @@ func (h *WisataHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/wisata/:id
+// GetByID godoc
+// @Summary      Detail wisata
+// @Description  Ambil satu wisata berdasarkan ID
+// @Tags         Wisata
+// @Produce      json
+// @Param        id   path      int  true  "Wisata ID"
+// @Success      200  {object}  response.Base{data=domain.Wisata}
+// @Failure      400  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /wisata/{id} [get]
 func (h *WisataHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -57,7 +75,18 @@ func (h *WisataHandler) GetByID(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// POST /api/admin/wisata
+// Create godoc
+// @Summary      Tambah wisata
+// @Description  Tambah data wisata baru (admin only)
+// @Tags         Wisata
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      domain.Wisata  true  "Data wisata"
+// @Success      201   {object}  response.Base{data=domain.Wisata}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Router       /admin/wisata [post]
 func (h *WisataHandler) Create(c fiber.Ctx) error {
 	var body domain.Wisata
 	if err := c.Bind().JSON(&body); err != nil {
@@ -70,7 +99,20 @@ func (h *WisataHandler) Create(c fiber.Ctx) error {
 	return response.Created(c, "wisata berhasil ditambahkan", body)
 }
 
-// PUT /api/admin/wisata/:id
+// Update godoc
+// @Summary      Update wisata
+// @Description  Perbarui data wisata berdasarkan ID (admin only)
+// @Tags         Wisata
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      int            true  "Wisata ID"
+// @Param        body  body      domain.Wisata  true  "Data wisata"
+// @Success      200   {object}  response.Base{data=domain.Wisata}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Failure      404   {object}  response.Base
+// @Router       /admin/wisata/{id} [put]
 func (h *WisataHandler) Update(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -89,7 +131,18 @@ func (h *WisataHandler) Update(c fiber.Ctx) error {
 	return response.OK(c, "wisata berhasil diperbarui", body)
 }
 
-// DELETE /api/admin/wisata/:id
+// Delete godoc
+// @Summary      Hapus wisata
+// @Description  Hapus data wisata berdasarkan ID (admin only)
+// @Tags         Wisata
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "Wisata ID"
+// @Success      200  {object}  response.Base
+// @Failure      400  {object}  response.Base
+// @Failure      401  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /admin/wisata/{id} [delete]
 func (h *WisataHandler) Delete(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {

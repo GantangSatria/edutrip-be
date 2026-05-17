@@ -16,7 +16,15 @@ func NewTransportasiHandler(svc service.TransportasiService) *TransportasiHandle
 	return &TransportasiHandler{svc}
 }
 
-// GET /api/transportasi?rute=Jakarta
+// GetAll godoc
+// @Summary      List transportasi
+// @Description  Ambil semua transportasi. Filter opsional dengan query param rute (ILIKE).
+// @Tags         Transportasi
+// @Produce      json
+// @Param        rute  query     string  false  "Filter by rute (partial match)"
+// @Success      200   {object}  response.Base{data=[]domain.Transportasi}
+// @Failure      500   {object}  response.Base
+// @Router       /transportasi [get]
 func (h *TransportasiHandler) GetAll(c fiber.Ctx) error {
 	rute := c.Query("rute")
 	if rute != "" {
@@ -34,7 +42,16 @@ func (h *TransportasiHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/transportasi/:id
+// GetByID godoc
+// @Summary      Detail transportasi
+// @Description  Ambil satu transportasi berdasarkan ID
+// @Tags         Transportasi
+// @Produce      json
+// @Param        id   path      int  true  "Transportasi ID"
+// @Success      200  {object}  response.Base{data=domain.Transportasi}
+// @Failure      400  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /transportasi/{id} [get]
 func (h *TransportasiHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -48,7 +65,18 @@ func (h *TransportasiHandler) GetByID(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// POST /api/admin/transportasi
+// Create godoc
+// @Summary      Tambah transportasi
+// @Description  Tambah data transportasi baru (admin only)
+// @Tags         Transportasi
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      domain.Transportasi  true  "Data transportasi"
+// @Success      201   {object}  response.Base{data=domain.Transportasi}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Router       /admin/transportasi [post]
 func (h *TransportasiHandler) Create(c fiber.Ctx) error {
 	var body domain.Transportasi
 	if err := c.Bind().JSON(&body); err != nil {
@@ -61,7 +89,20 @@ func (h *TransportasiHandler) Create(c fiber.Ctx) error {
 	return response.Created(c, "transportasi berhasil ditambahkan", body)
 }
 
-// PUT /api/admin/transportasi/:id
+// Update godoc
+// @Summary      Update transportasi
+// @Description  Perbarui data transportasi berdasarkan ID (admin only)
+// @Tags         Transportasi
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      int                  true  "Transportasi ID"
+// @Param        body  body      domain.Transportasi  true  "Data transportasi"
+// @Success      200   {object}  response.Base{data=domain.Transportasi}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Failure      404   {object}  response.Base
+// @Router       /admin/transportasi/{id} [put]
 func (h *TransportasiHandler) Update(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -80,7 +121,18 @@ func (h *TransportasiHandler) Update(c fiber.Ctx) error {
 	return response.OK(c, "transportasi berhasil diperbarui", body)
 }
 
-// DELETE /api/admin/transportasi/:id
+// Delete godoc
+// @Summary      Hapus transportasi
+// @Description  Hapus data transportasi berdasarkan ID (admin only)
+// @Tags         Transportasi
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "Transportasi ID"
+// @Success      200  {object}  response.Base
+// @Failure      400  {object}  response.Base
+// @Failure      401  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /admin/transportasi/{id} [delete]
 func (h *TransportasiHandler) Delete(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {

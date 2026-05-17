@@ -16,7 +16,15 @@ func NewRestoranHalalHandler(svc service.RestoranHalalService) *RestoranHalalHan
 	return &RestoranHalalHandler{svc}
 }
 
-// GET /api/restoran-halal?kota=Tokyo
+// GetAll godoc
+// @Summary      List restoran halal
+// @Description  Ambil semua restoran halal. Filter opsional dengan query param kota.
+// @Tags         Restoran Halal
+// @Produce      json
+// @Param        kota  query     string  false  "Filter by kota"
+// @Success      200   {object}  response.Base{data=[]domain.RestoranHalal}
+// @Failure      500   {object}  response.Base
+// @Router       /restoran-halal [get]
 func (h *RestoranHalalHandler) GetAll(c fiber.Ctx) error {
 	kota := c.Query("kota")
 	if kota != "" {
@@ -34,7 +42,16 @@ func (h *RestoranHalalHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/restoran-halal/:id
+// GetByID godoc
+// @Summary      Detail restoran halal
+// @Description  Ambil satu restoran halal berdasarkan ID
+// @Tags         Restoran Halal
+// @Produce      json
+// @Param        id   path      int  true  "Restoran Halal ID"
+// @Success      200  {object}  response.Base{data=domain.RestoranHalal}
+// @Failure      400  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /restoran-halal/{id} [get]
 func (h *RestoranHalalHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -48,7 +65,18 @@ func (h *RestoranHalalHandler) GetByID(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// POST /api/admin/restoran-halal
+// Create godoc
+// @Summary      Tambah restoran halal
+// @Description  Tambah data restoran halal baru (admin only)
+// @Tags         Restoran Halal
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      domain.RestoranHalal  true  "Data restoran halal"
+// @Success      201   {object}  response.Base{data=domain.RestoranHalal}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Router       /admin/restoran-halal [post]
 func (h *RestoranHalalHandler) Create(c fiber.Ctx) error {
 	var body domain.RestoranHalal
 	if err := c.Bind().JSON(&body); err != nil {
@@ -61,7 +89,20 @@ func (h *RestoranHalalHandler) Create(c fiber.Ctx) error {
 	return response.Created(c, "restoran halal berhasil ditambahkan", body)
 }
 
-// PUT /api/admin/restoran-halal/:id
+// Update godoc
+// @Summary      Update restoran halal
+// @Description  Perbarui data restoran halal berdasarkan ID (admin only)
+// @Tags         Restoran Halal
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      int                   true  "Restoran Halal ID"
+// @Param        body  body      domain.RestoranHalal  true  "Data restoran halal"
+// @Success      200   {object}  response.Base{data=domain.RestoranHalal}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Failure      404   {object}  response.Base
+// @Router       /admin/restoran-halal/{id} [put]
 func (h *RestoranHalalHandler) Update(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -80,7 +121,18 @@ func (h *RestoranHalalHandler) Update(c fiber.Ctx) error {
 	return response.OK(c, "restoran halal berhasil diperbarui", body)
 }
 
-// DELETE /api/admin/restoran-halal/:id
+// Delete godoc
+// @Summary      Hapus restoran halal
+// @Description  Hapus data restoran halal berdasarkan ID (admin only)
+// @Tags         Restoran Halal
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "Restoran Halal ID"
+// @Success      200  {object}  response.Base
+// @Failure      400  {object}  response.Base
+// @Failure      401  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /admin/restoran-halal/{id} [delete]
 func (h *RestoranHalalHandler) Delete(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {

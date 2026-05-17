@@ -9,7 +9,7 @@ import (
 	"github.com/GantangSatria/edutrip-be/internal/service"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
+	fiberSwagger "github.com/gofiber/contrib/v3/swaggo"
 )
 
 func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
@@ -17,7 +17,7 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 		AppName: "EduTrip API",
 	})
 
-	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	app.Get("/swagger/*", fiberSwagger.HandlerDefault)
 
 	// ── Repositories ──────────────────────────────────────────────────────────
 	adminRepo          := repository.NewAdminRepository(db)

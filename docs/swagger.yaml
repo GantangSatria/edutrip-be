@@ -1,0 +1,1328 @@
+basePath: /api/v1
+definitions:
+  domain.FasilitasIbadah:
+    properties:
+      createdAt:
+        type: string
+      foto:
+        type: string
+      id:
+        type: integer
+      kota:
+        type: string
+      latitude:
+        type: number
+      lokasiFasIbadah:
+        type: string
+      longitude:
+        type: number
+      namaFasIbadah:
+        type: string
+      tipeFas:
+        type: string
+    type: object
+  domain.Hotel:
+    properties:
+      alamatHotel:
+        type: string
+      createdAt:
+        type: string
+      foto:
+        type: string
+      hargaHotel:
+        type: number
+      id:
+        type: integer
+      ketHotel:
+        type: string
+      kota:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      namaHotel:
+        type: string
+      tipeHotel:
+        type: string
+    type: object
+  domain.RestoranHalal:
+    properties:
+      alamatResto:
+        type: string
+      createdAt:
+        type: string
+      foto:
+        type: string
+      hargaResto:
+        type: string
+      id:
+        type: integer
+      ketResto:
+        type: string
+      kota:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      namaResto:
+        type: string
+    type: object
+  domain.TokoOlehOleh:
+    properties:
+      alamatBelanja:
+        type: string
+      createdAt:
+        type: string
+      foto:
+        type: string
+      id:
+        type: integer
+      jenisBelanja:
+        type: string
+      ketBelanja:
+        type: string
+      kota:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      namaBelanja:
+        type: string
+    type: object
+  domain.Transportasi:
+    properties:
+      createdAt:
+        type: string
+      foto:
+        type: string
+      hargaTransportasiIDR:
+        type: number
+      id:
+        type: integer
+      jenisTransportasi:
+        type: string
+      ketTransportasi:
+        type: string
+      kodeBandara:
+        type: string
+      namaTransportasi:
+        type: string
+      rute:
+        type: string
+    type: object
+  domain.Wisata:
+    properties:
+      alamatWisata:
+        type: string
+      createdAt:
+        type: string
+      foto:
+        type: string
+      id:
+        type: integer
+      kategoriWisata:
+        type: string
+      ketWisata:
+        type: string
+      kota:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      namaWisata:
+        type: string
+      tiketWisata:
+        type: number
+    type: object
+  request.Login:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  response.Base:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.PlanData:
+    properties:
+      fasilitas_ibadah:
+        items:
+          $ref: '#/definitions/domain.FasilitasIbadah'
+        type: array
+      hotel:
+        items:
+          $ref: '#/definitions/domain.Hotel'
+        type: array
+      restoran:
+        items:
+          $ref: '#/definitions/domain.RestoranHalal'
+        type: array
+      toko_oleh_oleh:
+        items:
+          $ref: '#/definitions/domain.TokoOlehOleh'
+        type: array
+      wisata:
+        items:
+          $ref: '#/definitions/domain.Wisata'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: admin@edutrip.com
+    name: EduTrip Dev
+  description: API untuk aplikasi EduTrip — hotel, wisata, transportasi, restoran
+    halal, toko oleh-oleh, dan fasilitas ibadah.
+  termsOfService: http://swagger.io/terms/
+  title: EduTrip API
+  version: "1.0"
+paths:
+  /admin/fasilitas-ibadah:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data fasilitas ibadah baru (admin only)
+      parameters:
+      - description: Data fasilitas ibadah
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.FasilitasIbadah'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.FasilitasIbadah'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah fasilitas ibadah
+      tags:
+      - Fasilitas Ibadah
+  /admin/fasilitas-ibadah/{id}:
+    delete:
+      description: Hapus data fasilitas ibadah berdasarkan ID (admin only)
+      parameters:
+      - description: Fasilitas Ibadah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus fasilitas ibadah
+      tags:
+      - Fasilitas Ibadah
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data fasilitas ibadah berdasarkan ID (admin only)
+      parameters:
+      - description: Fasilitas Ibadah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data fasilitas ibadah
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.FasilitasIbadah'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.FasilitasIbadah'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update fasilitas ibadah
+      tags:
+      - Fasilitas Ibadah
+  /admin/hotel:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data hotel baru (admin only)
+      parameters:
+      - description: Data hotel
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Hotel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Hotel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah hotel
+      tags:
+      - Hotel
+  /admin/hotel/{id}:
+    delete:
+      description: Hapus data hotel berdasarkan ID (admin only)
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus hotel
+      tags:
+      - Hotel
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data hotel berdasarkan ID (admin only)
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data hotel
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Hotel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Hotel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update hotel
+      tags:
+      - Hotel
+  /admin/restoran-halal:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data restoran halal baru (admin only)
+      parameters:
+      - description: Data restoran halal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RestoranHalal'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.RestoranHalal'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah restoran halal
+      tags:
+      - Restoran Halal
+  /admin/restoran-halal/{id}:
+    delete:
+      description: Hapus data restoran halal berdasarkan ID (admin only)
+      parameters:
+      - description: Restoran Halal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus restoran halal
+      tags:
+      - Restoran Halal
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data restoran halal berdasarkan ID (admin only)
+      parameters:
+      - description: Restoran Halal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data restoran halal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RestoranHalal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.RestoranHalal'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update restoran halal
+      tags:
+      - Restoran Halal
+  /admin/toko-oleh-oleh:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data toko oleh-oleh baru (admin only)
+      parameters:
+      - description: Data toko oleh-oleh
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TokoOlehOleh'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.TokoOlehOleh'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah toko oleh-oleh
+      tags:
+      - Toko Oleh-Oleh
+  /admin/toko-oleh-oleh/{id}:
+    delete:
+      description: Hapus data toko oleh-oleh berdasarkan ID (admin only)
+      parameters:
+      - description: Toko Oleh-Oleh ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus toko oleh-oleh
+      tags:
+      - Toko Oleh-Oleh
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data toko oleh-oleh berdasarkan ID (admin only)
+      parameters:
+      - description: Toko Oleh-Oleh ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data toko oleh-oleh
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TokoOlehOleh'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.TokoOlehOleh'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update toko oleh-oleh
+      tags:
+      - Toko Oleh-Oleh
+  /admin/transportasi:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data transportasi baru (admin only)
+      parameters:
+      - description: Data transportasi
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Transportasi'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Transportasi'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah transportasi
+      tags:
+      - Transportasi
+  /admin/transportasi/{id}:
+    delete:
+      description: Hapus data transportasi berdasarkan ID (admin only)
+      parameters:
+      - description: Transportasi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus transportasi
+      tags:
+      - Transportasi
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data transportasi berdasarkan ID (admin only)
+      parameters:
+      - description: Transportasi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data transportasi
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Transportasi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Transportasi'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update transportasi
+      tags:
+      - Transportasi
+  /admin/wisata:
+    post:
+      consumes:
+      - application/json
+      description: Tambah data wisata baru (admin only)
+      parameters:
+      - description: Data wisata
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Wisata'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Wisata'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Tambah wisata
+      tags:
+      - Wisata
+  /admin/wisata/{id}:
+    delete:
+      description: Hapus data wisata berdasarkan ID (admin only)
+      parameters:
+      - description: Wisata ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Hapus wisata
+      tags:
+      - Wisata
+    put:
+      consumes:
+      - application/json
+      description: Perbarui data wisata berdasarkan ID (admin only)
+      parameters:
+      - description: Wisata ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data wisata
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Wisata'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Wisata'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      security:
+      - BearerAuth: []
+      summary: Update wisata
+      tags:
+      - Wisata
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentikasi admin dan mendapatkan JWT token
+      parameters:
+      - description: Kredensial login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Login admin
+      tags:
+      - Auth
+  /fasilitas-ibadah:
+    get:
+      description: Ambil semua fasilitas ibadah. Filter opsional dengan query param
+        kota.
+      parameters:
+      - description: Filter by kota
+        in: query
+        name: kota
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.FasilitasIbadah'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List fasilitas ibadah
+      tags:
+      - Fasilitas Ibadah
+  /fasilitas-ibadah/{id}:
+    get:
+      description: Ambil satu fasilitas ibadah berdasarkan ID
+      parameters:
+      - description: Fasilitas Ibadah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.FasilitasIbadah'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail fasilitas ibadah
+      tags:
+      - Fasilitas Ibadah
+  /hotel:
+    get:
+      description: Ambil semua hotel. Filter opsional dengan query param kota dan/atau
+        tipe.
+      parameters:
+      - description: Filter by kota
+        in: query
+        name: kota
+        type: string
+      - description: Filter by tipe hotel
+        in: query
+        name: tipe
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.Hotel'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List hotel
+      tags:
+      - Hotel
+  /hotel/{id}:
+    get:
+      description: Ambil satu hotel berdasarkan ID
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Hotel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail hotel
+      tags:
+      - Hotel
+  /plan-data:
+    get:
+      description: Ambil semua data yang dibutuhkan untuk merencanakan trip dalam
+        satu request. Filter opsional dengan query param kota.
+      parameters:
+      - description: Filter semua data by kota
+        in: query
+        name: kota
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PlanData'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Aggregator data perencanaan trip
+      tags:
+      - Plan Data
+  /restoran-halal:
+    get:
+      description: Ambil semua restoran halal. Filter opsional dengan query param
+        kota.
+      parameters:
+      - description: Filter by kota
+        in: query
+        name: kota
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.RestoranHalal'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List restoran halal
+      tags:
+      - Restoran Halal
+  /restoran-halal/{id}:
+    get:
+      description: Ambil satu restoran halal berdasarkan ID
+      parameters:
+      - description: Restoran Halal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.RestoranHalal'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail restoran halal
+      tags:
+      - Restoran Halal
+  /toko-oleh-oleh:
+    get:
+      description: Ambil semua toko oleh-oleh. Filter opsional dengan query param
+        kota.
+      parameters:
+      - description: Filter by kota
+        in: query
+        name: kota
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.TokoOlehOleh'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List toko oleh-oleh
+      tags:
+      - Toko Oleh-Oleh
+  /toko-oleh-oleh/{id}:
+    get:
+      description: Ambil satu toko oleh-oleh berdasarkan ID
+      parameters:
+      - description: Toko Oleh-Oleh ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.TokoOlehOleh'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail toko oleh-oleh
+      tags:
+      - Toko Oleh-Oleh
+  /transportasi:
+    get:
+      description: Ambil semua transportasi. Filter opsional dengan query param rute
+        (ILIKE).
+      parameters:
+      - description: Filter by rute (partial match)
+        in: query
+        name: rute
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.Transportasi'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List transportasi
+      tags:
+      - Transportasi
+  /transportasi/{id}:
+    get:
+      description: Ambil satu transportasi berdasarkan ID
+      parameters:
+      - description: Transportasi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Transportasi'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail transportasi
+      tags:
+      - Transportasi
+  /wisata:
+    get:
+      description: Ambil semua wisata. Filter opsional dengan query param kota dan/atau
+        kategori.
+      parameters:
+      - description: Filter by kota
+        in: query
+        name: kota
+        type: string
+      - description: Filter by kategori wisata
+        in: query
+        name: kategori
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.Wisata'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: List wisata
+      tags:
+      - Wisata
+  /wisata/{id}:
+    get:
+      description: Ambil satu wisata berdasarkan ID
+      parameters:
+      - description: Wisata ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Base'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Wisata'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Base'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Base'
+      summary: Detail wisata
+      tags:
+      - Wisata
+securityDefinitions:
+  BearerAuth:
+    description: 'Masukkan token dengan format: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

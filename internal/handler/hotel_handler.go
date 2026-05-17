@@ -16,7 +16,16 @@ func NewHotelHandler(svc service.HotelService) *HotelHandler {
 	return &HotelHandler{svc}
 }
 
-// GET /api/hotel?kota=Tokyo&tipe=bintang3
+// GetAll godoc
+// @Summary      List hotel
+// @Description  Ambil semua hotel. Filter opsional dengan query param kota dan/atau tipe.
+// @Tags         Hotel
+// @Produce      json
+// @Param        kota  query     string  false  "Filter by kota"
+// @Param        tipe  query     string  false  "Filter by tipe hotel"
+// @Success      200   {object}  response.Base{data=[]domain.Hotel}
+// @Failure      500   {object}  response.Base
+// @Router       /hotel [get]
 func (h *HotelHandler) GetAll(c fiber.Ctx) error {
 	kota := c.Query("kota")
 	tipe := c.Query("tipe")
@@ -43,7 +52,16 @@ func (h *HotelHandler) GetAll(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// GET /api/hotel/:id
+// GetByID godoc
+// @Summary      Detail hotel
+// @Description  Ambil satu hotel berdasarkan ID
+// @Tags         Hotel
+// @Produce      json
+// @Param        id   path      int  true  "Hotel ID"
+// @Success      200  {object}  response.Base{data=domain.Hotel}
+// @Failure      400  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /hotel/{id} [get]
 func (h *HotelHandler) GetByID(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -57,7 +75,18 @@ func (h *HotelHandler) GetByID(c fiber.Ctx) error {
 	return response.OK(c, "success", data)
 }
 
-// POST /api/admin/hotel
+// Create godoc
+// @Summary      Tambah hotel
+// @Description  Tambah data hotel baru (admin only)
+// @Tags         Hotel
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body  body      domain.Hotel  true  "Data hotel"
+// @Success      201   {object}  response.Base{data=domain.Hotel}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Router       /admin/hotel [post]
 func (h *HotelHandler) Create(c fiber.Ctx) error {
 	var body domain.Hotel
 	if err := c.Bind().JSON(&body); err != nil {
@@ -70,7 +99,20 @@ func (h *HotelHandler) Create(c fiber.Ctx) error {
 	return response.Created(c, "hotel berhasil ditambahkan", body)
 }
 
-// PUT /api/admin/hotel/:id
+// Update godoc
+// @Summary      Update hotel
+// @Description  Perbarui data hotel berdasarkan ID (admin only)
+// @Tags         Hotel
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id    path      int           true  "Hotel ID"
+// @Param        body  body      domain.Hotel  true  "Data hotel"
+// @Success      200   {object}  response.Base{data=domain.Hotel}
+// @Failure      400   {object}  response.Base
+// @Failure      401   {object}  response.Base
+// @Failure      404   {object}  response.Base
+// @Router       /admin/hotel/{id} [put]
 func (h *HotelHandler) Update(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
@@ -89,7 +131,18 @@ func (h *HotelHandler) Update(c fiber.Ctx) error {
 	return response.OK(c, "hotel berhasil diperbarui", body)
 }
 
-// DELETE /api/admin/hotel/:id
+// Delete godoc
+// @Summary      Hapus hotel
+// @Description  Hapus data hotel berdasarkan ID (admin only)
+// @Tags         Hotel
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "Hotel ID"
+// @Success      200  {object}  response.Base
+// @Failure      400  {object}  response.Base
+// @Failure      401  {object}  response.Base
+// @Failure      404  {object}  response.Base
+// @Router       /admin/hotel/{id} [delete]
 func (h *HotelHandler) Delete(c fiber.Ctx) error {
 	id, err := utils.ParseID(c)
 	if err != nil {
