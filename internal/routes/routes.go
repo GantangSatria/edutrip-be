@@ -16,6 +16,8 @@ func Register(
 	tokoOlehOlehHandler    *handler.TokoOlehOlehHandler,
 	transportasiHandler    *handler.TransportasiHandler,
 	wisataHandler          *handler.WisataHandler,
+	settingHandler         *handler.SettingHandler,
+	kotaHandler            *handler.KotaHandler,
 
 	planDataHandler *handler.PlanDataHandler,
 
@@ -50,6 +52,11 @@ func Register(
 	api.Get("/wisata", wisataHandler.GetAll)
 	api.Get("/wisata/:id", wisataHandler.GetByID)
 
+	api.Get("/settings", settingHandler.GetAll)
+
+	api.Get("/kota", kotaHandler.GetAll)
+	api.Get("/kota/:id", kotaHandler.GetByID)
+
 	// ── CMS — protected, hanya admin ─────────────────────────────────────────
 	admin := api.Group("/admin", authMiddleware.Protected())
 
@@ -76,4 +83,10 @@ func Register(
 	admin.Post("/wisata", wisataHandler.Create)
 	admin.Put("/wisata/:id", wisataHandler.Update)
 	admin.Delete("/wisata/:id", wisataHandler.Delete)
+
+	admin.Put("/settings/:key", settingHandler.Update)
+
+	admin.Post("/kota", kotaHandler.Create)
+	admin.Put("/kota/:id", kotaHandler.Update)
+	admin.Delete("/kota/:id", kotaHandler.Delete)
 }

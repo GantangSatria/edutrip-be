@@ -42,6 +42,8 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	tokoOlehOlehRepo   := repository.NewTokoOlehOlehRepository(db)
 	transportasiRepo   := repository.NewTransportasiRepository(db)
 	wisataRepo         := repository.NewWisataRepository(db)
+	settingRepo        := repository.NewSettingRepository(db)
+	kotaRepo           := repository.NewKotaRepository(db)
 
 	// ── Services ──────────────────────────────────────────────────────────────
 	authService          := service.NewAuthService(adminRepo, cfg.JWTSecret)
@@ -51,6 +53,8 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	tokoOlehOlehSvc     := service.NewTokoOlehOlehService(tokoOlehOlehRepo)
 	transportasiSvc     := service.NewTransportasiService(transportasiRepo)
 	wisataSvc           := service.NewWisataService(wisataRepo)
+	settingSvc          := service.NewSettingService(settingRepo)
+	kotaSvc             := service.NewKotaService(kotaRepo)
 
 	// ── Handlers ──────────────────────────────────────────────────────────────
 	authHandler          := handler.NewAuthHandler(authService)
@@ -60,6 +64,8 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 	tokoOlehOlehHdlr    := handler.NewTokoOlehOlehHandler(tokoOlehOlehSvc)
 	transportasiHdlr    := handler.NewTransportasiHandler(transportasiSvc)
 	wisataHdlr          := handler.NewWisataHandler(wisataSvc)
+	settingHdlr         := handler.NewSettingHandler(settingSvc)
+	kotaHdlr            := handler.NewKotaHandler(kotaSvc)
 	planDataHdlr        := handler.NewPlanDataHandler(
 		wisataSvc,
 		hotelSvc,
@@ -81,6 +87,8 @@ func NewApp(cfg *config.Config, db *pgxpool.Pool) *fiber.App {
 		tokoOlehOlehHdlr,
 		transportasiHdlr,
 		wisataHdlr,
+		settingHdlr,
+		kotaHdlr,
 		planDataHdlr,
 		authMiddleware,
 	)
